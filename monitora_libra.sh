@@ -14,13 +14,26 @@
 #depois de dar permissão, executa: ./monitora_libra.sh
 #código feito e testando em ambiente Linux.
 
+if [ "$1" == "" ] 
+then
+	printf "####### MONITORA COTAÇÃO DA LIBRA NO TRANSFERWISE #######\n"
+	printf "# Deve informar a cotação em real que deseja\n"
+	printf "# Ex.: $0 4.75\n\n"
+else
+	while [ 1 ]
+	do
 
-while [ 1 ]
-do
+	curl -o cotacao -sS -X GET "https://api.sandbox.transferwise.tech/v1/rates?source=GBP&target=BRL" -H "Authorization: Bearer <token>" 
 
-curl -sS -X GET "https://api.sandbox.transferwise.tech/v1/rates?source=GBP&target=BRL" -H "Authorization: Bearer b08cd38b-9114-4f83-9ab3-c654bc1531aa" | cut -d ',' -f1 | cut -d ':' -f 2 
+	cat cotacao | cut -d ',' -f1 | cut -d ':' -f 2 | sed 's/...$//' > libra
+	if [ $((echo "scale=4; $(<libra) <= $1") | bc -l) == 1 ] 
+	then
+	printf "£ 1 = R$ $(<libra) \t $(date) \n"
+	fi
 
-sleep 2 
-done
+	sleep 30
+	done
+fi
+
 
 
