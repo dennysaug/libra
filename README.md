@@ -4,4 +4,4 @@ dar permissão:
 chmod +x monitora_libra.sh
 
 executar:
-./monitora_libra.sh
+./monitora_libra.sh 4.95
